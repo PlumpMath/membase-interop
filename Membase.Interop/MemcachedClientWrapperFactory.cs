@@ -3,30 +3,24 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Runtime.InteropServices;
-using Membase;
-using Membase.Configuration;
 using Enyim.Caching.Memcached;
 using System.Web.Configuration;
 using System.Configuration;
 using System.IO;
 using Enyim;
+using Enyim.Caching.Configuration;
 
 namespace Membase.Interop
 {
-	[Guid("c6c892e3-76ae-4684-a449-9d90f1b3bf7a"), ClassInterface(ClassInterfaceType.None)]
-	[ProgId("Membase.Interop.MembaseClientFactory")]
-	public class MembaseClientWrapperFactory : IMembaseClientWrapperFactory
+	[Guid("64a3a309-94d4-4d88-a587-1756fb66527c"), ClassInterface(ClassInterfaceType.None)]
+	[ProgId("Enyim.Caching.Interop.MemcachedClientFactory")]
+	public class MemcachedClientWrapperFactory : IMemcachedClientWrapperFactory
 	{
 		private static Dictionary<string, IMemcachedClientWrapper> cache = new Dictionary<string, IMemcachedClientWrapper>(StringComparer.OrdinalIgnoreCase);
 
 		IMemcachedClientWrapper IMemcachedClientWrapperFactory.Create(string configPath)
 		{
-			return ((IMembaseClientWrapperFactory)this).CreateWithBucket(configPath, null);
-		}
-
-		IMemcachedClientWrapper IMembaseClientWrapperFactory.CreateWithBucket(string configPath, string bucketName)
-		{
-			var key = configPath + "++" + bucketName;
+			var key = configPath;
 			IMemcachedClientWrapper retval;
 
 			if (!cache.TryGetValue(key, out retval))
@@ -35,13 +29,13 @@ namespace Membase.Interop
 					{
 						var config = this.Load(configPath, null);
 
-						cache[key] = retval = new MembaseClientWrapper(config, bucketName);
+						cache[key] = retval = new MemcachedClientWrapper(config);
 					}
 
 			return retval;
 		}
 
-		private IMembaseClientConfiguration Load(string path, string sectionName)
+		private IMemcachedClientConfiguration Load(string path, string sectionName)
 		{
 			//System.Diagnostics.Debugger.Break();
 
@@ -55,7 +49,7 @@ namespace Membase.Interop
 			if (String.IsNullOrEmpty(sectionName))
 				sectionName = "membase";
 
-			var section = cfg.GetSection(sectionName) as IMembaseClientConfiguration;
+			var section = cfg.GetSection(sectionName) as IMemcachedClientConfiguration;
 			if (section == null) if (!File.Exists(path)) throw new InvalidOperationException("The config section '" + sectionName + "' cannot be found.");
 
 			return section;

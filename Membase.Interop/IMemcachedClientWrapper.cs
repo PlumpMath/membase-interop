@@ -5,13 +5,15 @@ using System.Text;
 using Membase;
 using Membase.Configuration;
 using System.Runtime.InteropServices;
+using System.Collections;
 
 namespace Membase.Interop
 {
 	[Guid("2a839618-797d-4715-9337-6c349706034a"), InterfaceType(ComInterfaceType.InterfaceIsIDispatch)]
-	public interface IMembaseClientWrapper
+	public interface IMemcachedClientWrapper
 	{
 		object Get(string key);
+		Hashtable Gets(string[] keys);
 
 		bool Set(string key, object value);
 		bool Add(string key, object value);

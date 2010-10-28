@@ -40,10 +40,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MemcachedClientWrapperFactory.cs" />
+    <Compile Include="MemcachedClientWrapper.cs" />
     <Compile Include="MembaseClientWrapperFactory.cs" />
     <Compile Include="IMembaseClientWrapperFactory.cs" />
     <Compile Include="MembaseClientWrapper.cs" />
-    <Compile Include="IMembaseClientWrapper.cs" />
+    <Compile Include="IMemcachedClientWrapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

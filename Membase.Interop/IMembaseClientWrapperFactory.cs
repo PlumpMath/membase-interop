@@ -9,11 +9,16 @@ using System.Runtime.InteropServices;
 namespace Membase.Interop
 {
 	[Guid("742c7d81-4c83-48b5-a59d-01565aaea33c"), InterfaceType(ComInterfaceType.InterfaceIsIDispatch)]
-	public interface IMembaseClientWrapperFactory
+	public interface IMemcachedClientWrapperFactory
 	{
 		[return: MarshalAs(UnmanagedType.IDispatch)]
-		IMembaseClientWrapper Create(string configPath);
+		IMemcachedClientWrapper Create(string configPath);
+	}
+
+	[Guid("03879c02-340d-4aaa-b317-f790ded01084"), InterfaceType(ComInterfaceType.InterfaceIsIDispatch)]
+	public interface IMembaseClientWrapperFactory : IMemcachedClientWrapperFactory
+	{
 		[return: MarshalAs(UnmanagedType.IDispatch)]
-		IMembaseClientWrapper CreateWithBucket(string configPath, string bucketName);
+		IMemcachedClientWrapper CreateWithBucket(string configPath, string bucketName);
 	}
 }
