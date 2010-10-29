@@ -19,7 +19,7 @@ namespace Membase.Interop
 	{
 		private static Dictionary<string, IMemcachedClientWrapper> cache = new Dictionary<string, IMemcachedClientWrapper>(StringComparer.OrdinalIgnoreCase);
 
-		IMemcachedClientWrapper IMemcachedClientWrapperFactory.Create(string configPath)
+		IMemcachedClientWrapper IMembaseClientWrapperFactory.Create(string configPath)
 		{
 			return ((IMembaseClientWrapperFactory)this).CreateWithBucket(configPath, null);
 		}
