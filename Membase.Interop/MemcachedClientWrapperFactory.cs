@@ -47,7 +47,7 @@ namespace Membase.Interop
 			if (cfg == null) if (!File.Exists(path)) throw new InvalidOperationException("The config file '" + path + "' cannot be found.");
 
 			if (String.IsNullOrEmpty(sectionName))
-				sectionName = "membase";
+				sectionName = "enyim.com/memcached";
 
 			var section = cfg.GetSection(sectionName) as IMemcachedClientConfiguration;
 			if (section == null) if (!File.Exists(path)) throw new InvalidOperationException("The config section '" + sectionName + "' cannot be found.");
