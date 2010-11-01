@@ -9,6 +9,7 @@ using System.Configuration;
 using System.IO;
 using Enyim;
 using Enyim.Caching.Configuration;
+using System.Web;
 
 namespace Membase.Interop
 {
@@ -16,20 +17,28 @@ namespace Membase.Interop
 	[ProgId("Enyim.Caching.Interop.MemcachedClientFactory")]
 	public class MemcachedClientWrapperFactory : IMemcachedClientWrapperFactory
 	{
-		private static Dictionary<string, IMemcachedClientWrapper> cache = new Dictionary<string, IMemcachedClientWrapper>(StringComparer.OrdinalIgnoreCase);
+		private static readonly object SyncObj = new Object();
 
 		IMemcachedClientWrapper IMemcachedClientWrapperFactory.Create(string configPath)
 		{
-			var key = configPath;
+			System.Diagnostics.Debugger.Break();
+
+			if (String.IsNullOrEmpty(configPath)) throw new ArgumentNullException("configPath");
+			if (!File.Exists(configPath)) throw new FileNotFoundException("File not found: " + configPath);
+
+			var key = ("MCC@" + configPath).ToUpperInvariant();
 			IMemcachedClientWrapper retval;
 
-			if (!cache.TryGetValue(key, out retval))
+			var cache = HttpRuntime.Cache;
+
+			if ((retval = cache[key] as IMemcachedClientWrapper) == null)
 				lock (cache)
-					if (!cache.TryGetValue(key, out retval))
+					if ((retval = cache[key] as IMemcachedClientWrapper) == null)
 					{
 						var config = this.Load(configPath, null);
+						retval = retval = new MemcachedClientWrapper(config);
 
-						cache[key] = retval = new MemcachedClientWrapper(config);
+						cache.Insert(key, retval, new System.Web.Caching.CacheDependency(configPath));
 					}
 
 			return retval;
@@ -53,6 +62,21 @@ namespace Membase.Interop
 			if (section == null) if (!File.Exists(path)) throw new InvalidOperationException("The config section '" + sectionName + "' cannot be found.");
 
 			return section;
+		}
+
+
+		void IMemcachedClientWrapperFactory.ClearCachedClients()
+		{
+			var cache = HttpRuntime.Cache;
+
+			lock (SyncObj)
+				foreach (System.Collections.DictionaryEntry entry in HttpRuntime.Cache)
+				{
+					var k = entry.Key as string;
+
+					if (k != null && k.StartsWith("MCC@"))
+						cache.Remove(k);
+				}
 		}
 	}
 }

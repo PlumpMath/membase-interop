@@ -13,6 +13,8 @@ namespace Membase.Interop
 	{
 		[return: MarshalAs(UnmanagedType.IDispatch)]
 		IMemcachedClientWrapper Create(string configPath);
+
+		void ClearCachedClients();
 	}
 
 	[Guid("03879c02-340d-4aaa-b317-f790ded01084"), InterfaceType(ComInterfaceType.InterfaceIsIDispatch)]
@@ -23,5 +25,7 @@ namespace Membase.Interop
 
 		[return: MarshalAs(UnmanagedType.IDispatch)]
 		IMemcachedClientWrapper CreateWithBucket(string configPath, string bucketName);
+
+		void ClearCachedClients();
 	}
 }

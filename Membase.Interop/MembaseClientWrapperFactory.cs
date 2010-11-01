@@ -10,6 +10,7 @@ using System.Web.Configuration;
 using System.Configuration;
 using System.IO;
 using Enyim;
+using System.Web;
 
 namespace Membase.Interop
 {
@@ -17,7 +18,7 @@ namespace Membase.Interop
 	[ProgId("Membase.Interop.MembaseClientFactory")]
 	public class MembaseClientWrapperFactory : IMembaseClientWrapperFactory
 	{
-		private static Dictionary<string, IMemcachedClientWrapper> cache = new Dictionary<string, IMemcachedClientWrapper>(StringComparer.OrdinalIgnoreCase);
+		private static readonly object SyncObj = new Object();
 
 		IMemcachedClientWrapper IMembaseClientWrapperFactory.Create(string configPath)
 		{
@@ -26,16 +27,22 @@ namespace Membase.Interop
 
 		IMemcachedClientWrapper IMembaseClientWrapperFactory.CreateWithBucket(string configPath, string bucketName)
 		{
-			var key = configPath + "++" + bucketName;
+			if (String.IsNullOrEmpty(configPath)) throw new ArgumentNullException("configPath");
+			if (!File.Exists(configPath)) throw new FileNotFoundException("File not found: " + configPath);
+
+			var key = ("MB@" + configPath + "@" + bucketName).ToUpperInvariant();
 			IMemcachedClientWrapper retval;
 
-			if (!cache.TryGetValue(key, out retval))
+			var cache = HttpRuntime.Cache;
+
+			if ((retval = cache[key] as IMemcachedClientWrapper) == null)
 				lock (cache)
-					if (!cache.TryGetValue(key, out retval))
+					if ((retval = cache[key] as IMemcachedClientWrapper) == null)
 					{
 						var config = this.Load(configPath, null);
+						retval = new MembaseClientWrapper(config, bucketName);
 
-						cache[key] = retval = new MembaseClientWrapper(config, bucketName);
+						cache.Insert(key, retval, new System.Web.Caching.CacheDependency(configPath));
 					}
 
 			return retval;
@@ -43,22 +50,33 @@ namespace Membase.Interop
 
 		private IMembaseClientConfiguration Load(string path, string sectionName)
 		{
-			//System.Diagnostics.Debugger.Break();
-
-			if (!File.Exists(path)) throw new InvalidOperationException("The config file '" + path + "' cannot be found.");
 			var cfm = new ConfigurationFileMap();
 			cfm.MachineConfigFilename = path;
 
 			var cfg = ConfigurationManager.OpenMappedMachineConfiguration(cfm);
-			if (cfg == null) if (!File.Exists(path)) throw new InvalidOperationException("The config file '" + path + "' cannot be found.");
+			if (cfg == null) throw new InvalidOperationException("The config file '" + path + "' cannot be loaded.");
 
 			if (String.IsNullOrEmpty(sectionName))
 				sectionName = "membase";
 
 			var section = cfg.GetSection(sectionName) as IMembaseClientConfiguration;
-			if (section == null) if (!File.Exists(path)) throw new InvalidOperationException("The config section '" + sectionName + "' cannot be found.");
+			if (section == null) throw new InvalidOperationException("The config section '" + sectionName + "' cannot be found in the config file: '" + path + "'.");
 
 			return section;
+		}
+
+		void IMembaseClientWrapperFactory.ClearCachedClients()
+		{
+			var cache = HttpRuntime.Cache;
+
+			lock (SyncObj)
+				foreach (System.Collections.DictionaryEntry entry in HttpRuntime.Cache)
+				{
+					var k = entry.Key as string;
+
+					if (k != null && k.StartsWith("MB@"))
+						cache.Remove(k);
+				}
 		}
 	}
 }

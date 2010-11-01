@@ -1,9 +1,8 @@
 call u.bat
 
 gacutil /i Enyim.Caching.dll
-gacutil /i NorthScale.Store.dll
-gacutil /i NS.Interop.dll
-gacutil /i log4net.dll
+gacutil /i Membase.dll
+gacutil /i Membase.Interop.dll
 
-regasm /unregister NS.Interop.dll
-regasm /verbose NS.Interop.dll
+regasm /unregister Membase.Interop.dll
+regasm /verbose Membase.Interop.dll
