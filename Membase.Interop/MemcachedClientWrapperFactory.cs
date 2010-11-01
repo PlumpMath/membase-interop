@@ -64,7 +64,6 @@ namespace Membase.Interop
 			return section;
 		}
 
-
 		void IMemcachedClientWrapperFactory.ClearCachedClients()
 		{
 			var cache = HttpRuntime.Cache;

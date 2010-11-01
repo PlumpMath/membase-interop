@@ -46,9 +46,13 @@ namespace Membase.Interop
 			return this.mc.Store(StoreMode.Set, key, value);
 		}
 
-		System.Collections.Hashtable IMemcachedClientWrapper.Gets(string[] keys)
+		System.Collections.Hashtable IMemcachedClientWrapper.Gets(object[] keys)
 		{
-			var tmp = this.mc.Get(keys);
+			var realKeys = new string[keys.Length];
+
+			Array.Copy(keys, realKeys, realKeys.Length);
+
+			var tmp = this.mc.Get(realKeys);
 			var retval = new System.Collections.Hashtable(tmp.Count);
 
 			foreach (var kvp in tmp)
@@ -102,14 +106,28 @@ namespace Membase.Interop
 			return this.mc.Decrement(key, defaultValue, delta, expiresAt);
 		}
 
-		bool IMemcachedClientWrapper.Append(string key, byte[] data)
+		bool IMemcachedClientWrapper.Append(string key, object[] data)
 		{
-			return this.mc.Append(key, new ArraySegment<byte>(data));
+			return this.mc.Append(key, new ArraySegment<byte>(ToBytes(data)));
 		}
 
-		bool IMemcachedClientWrapper.Prepend(string key, byte[] data)
+		bool IMemcachedClientWrapper.Prepend(string key, object[] data)
 		{
-			return this.mc.Prepend(key, new ArraySegment<byte>(data));
+			return this.mc.Prepend(key, new ArraySegment<byte>(ToBytes(data)));
+		}
+
+		internal static byte[] ToBytes(object[] v)
+		{
+			if (v == null) return null;
+
+			var retval = new byte[v.Length];
+
+			for (var i = 0; i < retval.Length; i++)
+			{
+				retval[i] = Convert.ToByte(v[i]);
+			}
+
+			return retval;
 		}
 
 		void IMemcachedClientWrapper.FlushAll()

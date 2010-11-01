@@ -46,9 +46,13 @@ namespace Membase.Interop
 			return this.nsc.Store(StoreMode.Set, key, value);
 		}
 
-		System.Collections.Hashtable IMemcachedClientWrapper.Gets(string[] keys)
+		System.Collections.Hashtable IMemcachedClientWrapper.Gets(object[] keys)
 		{
-			var tmp = this.nsc.Get(keys);
+			var realKeys = new string[keys.Length];
+
+			Array.Copy(keys, realKeys, realKeys.Length);
+
+			var tmp = this.nsc.Get(realKeys);
 			var retval = new System.Collections.Hashtable(tmp.Count);
 
 			foreach (var kvp in tmp)
@@ -102,14 +106,14 @@ namespace Membase.Interop
 			return this.nsc.Decrement(key, defaultValue, delta, expiresAt);
 		}
 
-		bool IMemcachedClientWrapper.Append(string key, byte[] data)
+		bool IMemcachedClientWrapper.Append(string key, object[] data)
 		{
-			return this.nsc.Append(key, new ArraySegment<byte>(data));
+			return this.nsc.Append(key, new ArraySegment<byte>(MemcachedClientWrapper.ToBytes(data)));
 		}
 
-		bool IMemcachedClientWrapper.Prepend(string key, byte[] data)
+		bool IMemcachedClientWrapper.Prepend(string key, object[] data)
 		{
-			return this.nsc.Prepend(key, new ArraySegment<byte>(data));
+			return this.nsc.Prepend(key, new ArraySegment<byte>(MemcachedClientWrapper.ToBytes(data)));
 		}
 
 		void IMemcachedClientWrapper.FlushAll()

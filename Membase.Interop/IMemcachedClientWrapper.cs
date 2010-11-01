@@ -13,7 +13,7 @@ namespace Membase.Interop
 	public interface IMemcachedClientWrapper
 	{
 		object Get(string key);
-		Hashtable Gets(string[] keys);
+		Hashtable Gets(object[] keys);
 
 		bool Set(string key, object value);
 		bool Add(string key, object value);
@@ -30,8 +30,8 @@ namespace Membase.Interop
 		ulong Decrement(string key, ulong defaultValue, ulong delta);
 		ulong DecrementWithExpiration(string key, ulong defaultValue, ulong delta, DateTime expiresAt);
 
-		bool Append(string key, byte[] data);
-		bool Prepend(string key, byte[] data);
+		bool Append(string key, object[] data);
+		bool Prepend(string key, object[] data);
 
 		void FlushAll();
 	}
