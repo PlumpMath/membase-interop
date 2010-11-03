@@ -15,6 +15,7 @@ namespace Membase.Interop
 		IMemcachedClientWrapper Create(string configPath);
 
 		void ClearCachedClients();
+		string GetLibraryVersion();
 	}
 
 	[Guid("03879c02-340d-4aaa-b317-f790ded01084"), InterfaceType(ComInterfaceType.InterfaceIsIDispatch)]
@@ -27,5 +28,6 @@ namespace Membase.Interop
 		IMemcachedClientWrapper CreateWithBucket(string configPath, string bucketName);
 
 		void ClearCachedClients();
+		string GetLibraryVersion();
 	}
 }

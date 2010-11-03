@@ -13,7 +13,8 @@ namespace Membase.Interop
 	public interface IMemcachedClientWrapper
 	{
 		object Get(string key);
-		Hashtable Gets(object[] keys);
+		Hashtable GetAsDictionary(object[] keys);
+		object[] GetAsList(object[] keys);
 
 		bool Set(string key, object value);
 		bool Add(string key, object value);
@@ -34,5 +35,12 @@ namespace Membase.Interop
 		bool Prepend(string key, object[] data);
 
 		void FlushAll();
+	}
+
+	[Guid("a38acf89-f47e-40c5-b6ec-d7e329a1607a"), InterfaceType(ComInterfaceType.InterfaceIsIDispatch)]
+	public interface ICacheItem
+	{
+		string Key { get; }
+		object Value { get; }
 	}
 }

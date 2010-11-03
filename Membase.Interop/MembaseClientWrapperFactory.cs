@@ -67,16 +67,12 @@ namespace Membase.Interop
 
 		void IMembaseClientWrapperFactory.ClearCachedClients()
 		{
-			var cache = HttpRuntime.Cache;
+			lock (SyncObj) FactoryHelper.ClearCache("MB@");
+		}
 
-			lock (SyncObj)
-				foreach (System.Collections.DictionaryEntry entry in HttpRuntime.Cache)
-				{
-					var k = entry.Key as string;
-
-					if (k != null && k.StartsWith("MB@"))
-						cache.Remove(k);
-				}
+		string IMembaseClientWrapperFactory.GetLibraryVersion()
+		{
+			return FactoryHelper.GetAssemblyVersion();
 		}
 	}
 }

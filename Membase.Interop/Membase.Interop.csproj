@@ -40,6 +40,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CacheItem.cs" />
+    <Compile Include="MemcachedClientWrapperBase.cs" />
+    <Compile Include="FactoryHelper.cs" />
     <Compile Include="MemcachedClientWrapperFactory.cs" />
     <Compile Include="MemcachedClientWrapper.cs" />
     <Compile Include="MembaseClientWrapperFactory.cs" />
