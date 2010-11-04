@@ -66,8 +66,13 @@ namespace Membase.Interop
 			Array.Copy(keys, realKeys, realKeys.Length);
 
 			var tmp = this.client.Get(realKeys);
+			var retval = new object[tmp.Count];
+			int i = 0;
 
-			return tmp.Select(kvp => new CacheItem { Key = kvp.Key, Value = kvp.Value }).ToArray();
+			foreach (var kvp in tmp)
+				retval[i++] = new CacheItem { Key = kvp.Key, Value = kvp.Value };
+
+			return retval;
 		}
 
 		bool IMemcachedClientWrapper.Replace(string key, object value)

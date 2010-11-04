@@ -21,8 +21,6 @@ namespace Membase.Interop
 
 		IMemcachedClientWrapper IMemcachedClientWrapperFactory.Create(string configPath)
 		{
-			System.Diagnostics.Debugger.Break();
-
 			if (String.IsNullOrEmpty(configPath)) throw new ArgumentNullException("configPath");
 			if (!File.Exists(configPath)) throw new FileNotFoundException("File not found: " + configPath);
 
@@ -46,8 +44,6 @@ namespace Membase.Interop
 
 		private IMemcachedClientConfiguration Load(string path, string sectionName)
 		{
-			//System.Diagnostics.Debugger.Break();
-
 			if (!File.Exists(path)) throw new InvalidOperationException("The config file '" + path + "' cannot be found.");
 			var cfm = new ConfigurationFileMap();
 			cfm.MachineConfigFilename = path;
