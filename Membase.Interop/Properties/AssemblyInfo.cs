@@ -2,12 +2,12 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-[assembly: AssemblyTitle("MembaseCom")]
+[assembly: AssemblyTitle("Membase.Interop")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("MembaseCom")]
-[assembly: AssemblyCopyright("Copyright ©  2010")]
+[assembly: AssemblyProduct("Membase.Interop")]
+[assembly: AssemblyCopyright("Copyright © 2010")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -24,7 +24,7 @@ using System.Runtime.InteropServices;
 //
 //	2.10.0.4
 //
-[assembly: AssemblyVersion("2.10.0.2")]
-[assembly: AssemblyFileVersion("2.10.0.2")]
+[assembly: AssemblyVersion("2.10.0.5")]
+[assembly: AssemblyFileVersion("2.10.0.5")]
 
 [assembly: AssemblyKeyName("enyim")]
