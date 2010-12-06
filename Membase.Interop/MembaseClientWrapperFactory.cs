@@ -22,6 +22,8 @@ namespace Membase.Interop
 
 		IMemcachedClientWrapper IMembaseClientWrapperFactory.Create(string configPath)
 		{
+			//System.Diagnostics.Debugger.Break();
+
 			return ((IMembaseClientWrapperFactory)this).CreateWithBucket(configPath, null);
 		}
 
@@ -73,6 +75,11 @@ namespace Membase.Interop
 		string IMembaseClientWrapperFactory.GetLibraryVersion()
 		{
 			return FactoryHelper.GetAssemblyVersion();
+		}
+
+		void IMembaseClientWrapperFactory.SetLogPath(string path)
+		{
+			FactoryHelper.ConfigureLogger(path);
 		}
 	}
 }

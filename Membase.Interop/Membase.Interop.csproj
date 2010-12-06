@@ -40,6 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BasicLogger.cs" />
     <Compile Include="CacheItem.cs" />
     <Compile Include="MemcachedClientWrapperBase.cs" />
     <Compile Include="FactoryHelper.cs" />

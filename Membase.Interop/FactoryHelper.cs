@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Web;
 using System.Reflection;
+using System.IO;
 
 namespace Membase.Interop
 {
@@ -28,6 +29,19 @@ namespace Membase.Interop
 			var name = a.GetName();
 
 			return name.Version.ToString();
+		}
+
+		internal static void ConfigureLogger(string logPath)
+		{
+			if (String.IsNullOrEmpty(logPath))
+				Enyim.Caching.LogManager.AssignFactory(new Enyim.Caching.NullLoggerFactory());
+			else
+			{
+				if (!Directory.Exists(Path.GetDirectoryName(logPath)))
+					throw new DirectoryNotFoundException("Cannot find the directory " + Path.GetDirectoryName(logPath));
+
+				Enyim.Caching.LogManager.AssignFactory(new BasicLoggerFactory(logPath));
+			}
 		}
 	}
 }

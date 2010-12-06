@@ -69,5 +69,10 @@ namespace Membase.Interop
 		{
 			return FactoryHelper.GetAssemblyVersion();
 		}
+
+		void IMemcachedClientWrapperFactory.SetLogPath(string path)
+		{
+			FactoryHelper.ConfigureLogger(path);
+		}
 	}
 }
