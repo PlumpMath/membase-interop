@@ -26,7 +26,7 @@ namespace Membase.Interop
 		IMemcachedClientWrapper Create(string configPath);
 
 		[return: MarshalAs(UnmanagedType.IDispatch)]
-		IMemcachedClientWrapper CreateWithBucket(string configPath, string bucketName);
+		IMemcachedClientWrapper CreateWithBucket(string configPath, string bucketName, string bucketPassword);
 
 		void ClearCachedClients();
 		string GetLibraryVersion();

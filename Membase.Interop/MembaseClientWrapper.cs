@@ -16,8 +16,8 @@ namespace Membase.Interop
 	[ProgId("Membase.Interop.MembaseClient")]
 	public class MembaseClientWrapper : MemcachedClientWrapperBase
 	{
-		public MembaseClientWrapper(IMembaseClientConfiguration config) : this(config, null) { }
-		public MembaseClientWrapper(IMembaseClientConfiguration config, string bucketName)
-			: base(new MembaseClient(config, bucketName)) { }
+		//public MembaseClientWrapper(IMembaseClientConfiguration config) : this(config, config.Bucket, config.BucketPassword) { }
+		public MembaseClientWrapper(IMembaseClientConfiguration config, string bucketName, string bucketPassword)
+			: base(new MembaseClient(config, bucketName, bucketPassword)) { }
 	}
 }

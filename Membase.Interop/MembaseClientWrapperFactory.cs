@@ -22,17 +22,16 @@ namespace Membase.Interop
 
 		IMemcachedClientWrapper IMembaseClientWrapperFactory.Create(string configPath)
 		{
-			//System.Diagnostics.Debugger.Break();
-
-			return ((IMembaseClientWrapperFactory)this).CreateWithBucket(configPath, null);
+			return ((IMembaseClientWrapperFactory)this).CreateWithBucket(configPath, "default", null);
 		}
 
-		IMemcachedClientWrapper IMembaseClientWrapperFactory.CreateWithBucket(string configPath, string bucketName)
+		IMemcachedClientWrapper IMembaseClientWrapperFactory.CreateWithBucket(string configPath, string bucketName, string bucketPassword)
 		{
 			if (String.IsNullOrEmpty(configPath)) throw new ArgumentNullException("configPath");
 			if (!File.Exists(configPath)) throw new FileNotFoundException("File not found: " + configPath);
 
-			var key = ("MB@" + configPath + "@" + bucketName).ToUpperInvariant();
+			var key = ("MB@" + configPath + "@" + (bucketName ?? "\u0000") + "@" + (bucketPassword ?? "\u0000")).ToUpperInvariant();
+
 			IMemcachedClientWrapper retval;
 
 			var cache = HttpRuntime.Cache;
@@ -42,7 +41,7 @@ namespace Membase.Interop
 					if ((retval = cache[key] as IMemcachedClientWrapper) == null)
 					{
 						var config = this.Load(configPath, null);
-						retval = new MembaseClientWrapper(config, bucketName);
+						retval = new MembaseClientWrapper(config, bucketName, bucketPassword);
 
 						cache.Insert(key, retval, new System.Web.Caching.CacheDependency(configPath));
 					}
