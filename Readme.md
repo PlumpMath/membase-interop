@@ -24,25 +24,35 @@ If you are upgrading from a previous version you need to unregister the assembli
 
 Clients are created by either the [MemcachedClientWrapperFactory](/enyim/membase-interop/blob/master/Membase.Interop/MemcachedClientWrapperFactory.cs) or [MembaseClientWrapperFactory](/enyim/membase-interop/blob/master/Membase.Interop/MembaseClientWrapperFactory.cs).
 
-	'memcached client factory
+	' memcached client factory
 	dim mcf
 	set mcf = CreateObject("Enyim.Caching.Interop.MemcachedClientFactory")
 
-	'membase client factory
-	dim mbf, mbf2
+	' membase client factory
+	dim mbf
 	set mbf = CreateObject("Membase.Interop.MembaseClientFactory")
 
-The factories only support config file based client creation. The config files are the same as the app/web.config used by the client. See a sample in the Sample folder; documenttaion is available at [the client's wiki](https://github.com/enyim/EnyimMemcached/wiki).
+The factories only support config file based client creation. The config files are the same as the app/web.config used by the client. See a sample in the Sample folder; documentation is available at [the client's wiki](https://github.com/enyim/EnyimMemcached/wiki).
 
 	dim client
 	set client = mcf.Create("C:\asp\configs\memcached.config")
 
 The Membase client factory has a second constructor which can be used to create clients for different buckets, while still using the same configuration file.
 
-	'connect to the default bucket
-	set defaultClient = mbf.Create("C:\asp\configs\membase.config")
+	' connect to the default bucket
+	set client = mbf.Create("C:\asp\configs\membase.config")
 
-	'connect to the userdata bucket
-	set defaultClient = mbf.Create("C:\asp\configs\membase.config", "userdata", "userdatapassword")
+	' connect to the userdata bucket
+	set client = mbf.Create("C:\asp\configs\membase.config", "userdata", "userdatapassword")
 
 All factories return an object implementing the [IMemcachedClientWrapper](/enyim/membase-interop/blob/master/Membase.Interop/IMemcachedClientWrapper.cs) interface.
+
+You can enable debug logging by calling the `SetLogPath` method of the factories.
+
+	' enable logging. make sure the directory exists.
+	mbf.SetLogPath("C:\temp\debug.log")
+	
+	' disable logging by passing Null or an empty string
+	mbf.SetLogPath("")
+
+Note: logging settings are global, so all clients you created will log (or not) no matter if they were instantiated before or after you specified the path.
