@@ -19,7 +19,13 @@ namespace Membase.Interop
 				var k = entry.Key as string;
 
 				if (k != null && k.StartsWith(keyPrefix))
+				{
+					var item = cache[k] as IDisposable;
 					cache.Remove(k);
+					
+					if (item != null)
+						item.Dispose();
+				}
 			}
 		}
 
